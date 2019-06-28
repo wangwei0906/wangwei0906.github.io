@@ -359,18 +359,18 @@ height:50vh;
     
     
     <article class="index-post">
-        <a class="abstract-title" href = "/2019/06/27/hello-world/" >
+        <a class="abstract-title" href = "/2019/06/27/Maven坐标与依赖/" >
             
-                <span>Hello World</span>
+                <span>Maven坐标与依赖</span>
         </a>
         <div class="abstract-content">
-            Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick StartCreate a new post1$ hexo new "My New Post"
+            1、何为Maven坐标Maven定义了这样一组规则：世界上任何一个构建都可以使用Maven坐标唯一标示，Maven坐标的元素包括groupId、artifactId、version、packaging、classifier。只要提供正确的坐标元素，Maven就能找到对应的构建。
+2、坐标详解详细解释一下各个坐标元素
 
-More info: Writing
-Run server1$ hexo server
-
-Mo...
+groupId:定义当前Maven项目隶属的实际项目，通常以域名反向对应
+artifactId:该元素定义实际项目中的一个Maven项目（模块），在默认情况下，Maven生成的构建，其文件名会以artifactId作为开头。
+version:版本
+packaging:定义M...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
@@ -603,7 +603,7 @@ Mo...
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">06/27</span><a class="archive-post-title" href= "/2019/06/27/hello-world/" >Hello World</a>
+            <span class="archive-post-date">06/27</span><a class="archive-post-title" href= "/2019/06/27/Maven坐标与依赖/" >Maven坐标与依赖</a>
         </li>
     
     </div>

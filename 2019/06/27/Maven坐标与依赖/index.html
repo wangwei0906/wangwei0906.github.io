@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="">
+    <!-- title -->
+
+
+
+
+<!-- keywords -->
+
+
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="author" content="wangwei">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="wangwei">
+    
+    <meta name="keywords" content="hexo,hexo-theme,hexo-blog">
+    
+    <meta name="description" content="wangwei's Blog">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Maven坐标与依赖 · wangwei&#39;s blog</title>
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+</style>
+
+    <link rel="preload" href="/css/style.css?v=20180824" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="stylesheet" href="/css/mobile.css?v=20180824" media="(max-width: 980px)">
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+(function( w ){
+	"use strict";
+	// rel=preload support test
+	if( !w.loadCSS ){
+		w.loadCSS = function(){};
+	}
+	// define on the loadCSS obj
+	var rp = loadCSS.relpreload = {};
+	// rel=preload feature support test
+	// runs once and returns a function for compat purposes
+	rp.support = (function(){
+		var ret;
+		try {
+			ret = w.document.createElement( "link" ).relList.supports( "preload" );
+		} catch (e) {
+			ret = false;
+		}
+		return function(){
+			return ret;
+		};
+	})();
+
+	// if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+	// then change that media back to its intended value on load
+	rp.bindMediaToggle = function( link ){
+		// remember existing media attr for ultimate state, or default to 'all'
+		var finalMedia = link.media || "all";
+
+		function enableStylesheet(){
+			link.media = finalMedia;
+		}
+
+		// bind load handlers to enable media
+		if( link.addEventListener ){
+			link.addEventListener( "load", enableStylesheet );
+		} else if( link.attachEvent ){
+			link.attachEvent( "onload", enableStylesheet );
+		}
+
+		// Set rel and non-applicable media type to start an async request
+		// note: timeout allows this to happen async to let rendering continue in IE
+		setTimeout(function(){
+			link.rel = "stylesheet";
+			link.media = "only x";
+		});
+		// also enable media after 3 seconds,
+		// which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+		setTimeout( enableStylesheet, 3000 );
+	};
+
+	// loop through link elements in DOM
+	rp.poly = function(){
+		// double check this to prevent external calls from running
+		if( rp.support() ){
+			return;
+		}
+		var links = w.document.getElementsByTagName( "link" );
+		for( var i = 0; i < links.length; i++ ){
+			var link = links[ i ];
+			// qualify links to those with rel=preload and as=style attrs
+			if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+				// prevent rerunning on link
+				link.setAttribute( "data-loadcss", true );
+				// bind listeners to toggle media back
+				rp.bindMediaToggle( link );
+			}
+		}
+	};
+
+	// if unsupported, run the polyfill
+	if( !rp.support() ){
+		// run once at least
+		rp.poly();
+
+		// rerun poly on an interval until onload
+		var run = w.setInterval( rp.poly, 500 );
+		if( w.addEventListener ){
+			w.addEventListener( "load", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		} else if( w.attachEvent ){
+			w.attachEvent( "onload", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		}
+	}
+
+
+	// commonjs
+	if( typeof exports !== "undefined" ){
+		exports.loadCSS = loadCSS;
+	}
+	else {
+		w.loadCSS = loadCSS;
+	}
+}( typeof global !== "undefined" ? global : this ) );
+</script>
+
+    <link rel="icon" href="/assets/favicon.ico">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js" as="script">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" as="script">
+    <link rel="preload" href="/scripts/main.js" as="script">
+    <link rel="preload" as="font" href="/font/Oswald-Regular.ttf" crossorigin>
+    <link rel="preload" as="font" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" crossorigin>
+    
+    <!-- fancybox -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script>
+    <!-- 百度统计  -->
+    
+    <!-- 谷歌统计  -->
+    
+</head>
+
+    
+        <body class="post-body">
+    
+    
+<header class="header">
+
+    <div class="read-progress"></div>
+    <div class="header-sidebar-menu">&#xe775;</div>
+    <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >wangwei&#39;s blog.</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">Maven坐标与依赖</a>
+            </div>
+    </div>
+    
+    <a class="home-link" href=/>wangwei's blog.</a>
+</header>
+    <div class="wrapper">
+        <div class="site-intro" style="
+
+
+
+
+
+
+
+height:50vh;
+">
+    
+    <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+            Maven坐标与依赖
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+            
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                
+        
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2019/06/27</span>
+                    
+                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                        <span class="iconfont-archer">&#xe602;</span>
+                        <span id="busuanzi_value_page_pv"></span>
+                    </span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+        <script>
+ 
+  // get user agent
+  var browser = {
+    versions: function () {
+      var u = window.navigator.userAgent;
+      return {
+        userAgent: u,
+        trident: u.indexOf('Trident') > -1, //IE内核
+        presto: u.indexOf('Presto') > -1, //opera内核
+        webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+        mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+        iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+        iPad: u.indexOf('iPad') > -1, //是否为iPad
+        webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+        weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+        uc: u.indexOf('UCBrowser') > -1 //是否为android下的UC浏览器
+      };
+    }()
+  }
+  console.log("userAgent:" + browser.versions.userAgent);
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded');
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document.getElementsByClassName('intro-title')[0].classList.add('intro-fade-in');
+      document.getElementsByClassName('intro-subtitle')[0].classList.add('intro-fade-in');
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in');
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb(){
+    if (browser.versions.uc) {
+      console.log("UCBrowser");
+      fontLoaded();
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular']
+        },
+        loading: function () {  //所有字体开始加载
+          // console.log('loading');
+        },
+        active: function () {  //所有字体已渲染
+          fontLoaded();
+        },
+        inactive: function () { //字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout');
+          fontLoaded();
+        },
+        timeout: 5000 // Set the timeout to two seconds
+      });
+    }
+  }
+
+  function asyncErr(){
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (cb) { o.addEventListener('load', function (e) { cb(null, e); }, false); }
+    if (err) { o.addEventListener('error', function (e) { err(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+
+  var asyncLoadWithFallBack = function(arr, success, reject) {
+      var currReject = function(){
+        reject()
+        arr.shift()
+        if(arr.length)
+          async(arr[0], success, currReject)
+        }
+
+      async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack([
+    "https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js", 
+    "https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js",
+    "/lib/webfontloader.min.js"
+  ], asyncCb, asyncErr)
+</script>        
+        <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+        <div class="container container-unloaded">
+            <main class="main post-page">
+    <article class="article-entry">
+        <h3 id="1、何为Maven坐标"><a href="#1、何为Maven坐标" class="headerlink" title="1、何为Maven坐标"></a>1、何为Maven坐标</h3><p>Maven定义了这样一组规则：世界上任何一个构建都可以使用Maven坐标唯一标示，Maven坐标的元素包括groupId、artifactId、version、packaging、classifier。只要提供正确的坐标元素，Maven就能找到对应的构建。</p>
+<h3 id="2、坐标详解"><a href="#2、坐标详解" class="headerlink" title="2、坐标详解"></a>2、坐标详解</h3><p>详细解释一下各个坐标元素</p>
+<ul>
+<li>groupId:定义当前Maven项目隶属的实际项目，通常以域名反向对应</li>
+<li>artifactId:该元素定义实际项目中的一个Maven项目（模块），在默认情况下，Maven生成的构建，其文件名会以artifactId作为开头。</li>
+<li>version:版本</li>
+<li>packaging:定义Maven的打包方式 </li>
+<li>classifier:不可直接定义，因为附属构件不是项目直接默认生成的，而是又附加的插件帮助生成。</li>
+</ul>
+<p>项目的构件名是与坐标相对应的，一般的规则为artifactId-version[-classifier].packaging,[-classifier表示可选]。</p>
+<h3 id="3、依赖的配置"><a href="#3、依赖的配置" class="headerlink" title="3、依赖的配置"></a>3、依赖的配置</h3><p>一个依赖声明可以包含如下的一些元素：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;project&gt;</span><br><span class="line">    ......</span><br><span class="line">    &lt;dependencies&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;...&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;...&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;...&lt;/version&gt;</span><br><span class="line">            &lt;type&gt;...&lt;/type&gt;</span><br><span class="line">            &lt;optional&gt;...&lt;optional&gt;</span><br><span class="line">            &lt;exclusions&gt;</span><br><span class="line">                &lt;exclusion&gt;...&lt;/exclusion&gt;</span><br><span class="line">            &lt;/exclusions&gt;</span><br><span class="line">            ....</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">    &lt;/dependencies&gt;</span><br><span class="line">    .........</span><br><span class="line">&lt;/project&gt;</span><br></pre></td></tr></table></figure>
+
+<p>根元素下可以dependencies可以包含一个或者多个dependency元素，以声明一个或者多个项目依赖。每个依赖可以包含的 元素有：</p>
+<ul>
+<li>groupId、artifactId和version:依赖的基本坐标，对于任何一个依赖来说，基本坐标是最重要的，Maven根据坐标才能找到需要的依赖。</li>
+<li>type：依赖的类型，对应于项目坐标定义的packaging。大部分情况下，该元素不声明，其默认值为jar</li>
+<li>scope:依赖的范围，默认为compile。也可设置为test</li>
+<li>optional:标记依赖是否可选</li>
+<li>exclusions：用来排除传递性依赖。</li>
+</ul>
+<h3 id="4、依赖范围"><a href="#4、依赖范围" class="headerlink" title="4、依赖范围"></a>4、依赖范围</h3><p>依赖范围用来控制依赖与这三种classpath(编译classpath、测试classpath、运行classpath)的关系，Maven有一下几种依赖范围：</p>
+<ul>
+<li><p><strong>compile</strong>:编译依赖范围。如果没有指定，就会默认使用该依赖范围，使用此依赖范围的Maven依赖，对于编译、测试、运行三种classpath都有效。</p>
+</li>
+<li><p><strong>test</strong>:测试依赖范围。使用该范围的Maven依赖，只对于测试classpath有效，在编译主代码或者运行项目的使用时将无法使用此类依赖。典型的例子是JUnit,它只是在编译测试代码和运行测试的时候需要该依赖。</p>
+</li>
+<li><p><strong>provided</strong>：已提供依赖范围。使用此依赖范围的Maven依赖，对于编译和测试的classpath有效，但是在运行时无效。典型的例子是servlet-api，编译和测试项目的时候需要改依赖，但是在运行项目的时候，由于容器已经提供，就不需要Maven重复地引入一遍。</p>
+</li>
+<li><p><strong>runtime</strong>:运行时依赖范围。使用此依赖范围的Maven依赖，对于测试和运行classpath有效，但是编译主代码时无效。典型的例子是JDBC驱动实现，项目主代码的编译只需要JDK提供的JDBC接口，只有在测试或者运行项目的时候才需要实现上述接口的JDBC驱动。</p>
+</li>
+<li><p><strong>system</strong>:系统依赖范围，该范围与三种classpath的关系，和provided依赖范围完全一致。但是，使用system范围的依赖时必须通过systemPath元素显式的指定依赖文件的路径。由于此类依赖不是通过Maven仓库解析，而且往往与本机系统绑定，可能造成构建的不可移植，因此需要谨慎使用。systemPath元素可以引用环境变量，如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;javax.sql&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;jdbc-stdext&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;2.0&lt;/version&gt;</span><br><span class="line">    &lt;scope&gt;system&lt;/scope&gt;</span><br><span class="line">    &lt;systemPath&gt;$&#123;java.home&#125;/lib/rt.jar&lt;/systemPath&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>Import(Maven 2.0.9及以上)</strong>：导入依赖范围。该依赖范围不会对三种classpath产生实际的影响  </p>
+</li>
+</ul>
+<p>上述除了import以外的各种依赖范围与三种classpath的关系如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th>依赖范围（Scope）</th>
+<th>对于编译classpath有效</th>
+<th>对于测试classpath有效</th>
+<th>对于运行classpath有效</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>compile</td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+<td>spring-core</td>
+</tr>
+<tr>
+<td>test</td>
+<td>–</td>
+<td>Y</td>
+<td>–</td>
+<td>JUnit</td>
+</tr>
+<tr>
+<td>provided</td>
+<td>Y</td>
+<td>Y</td>
+<td>–</td>
+<td>servlet-api</td>
+</tr>
+<tr>
+<td>runtime</td>
+<td>–</td>
+<td>Y</td>
+<td>Y</td>
+<td>JDBC驱动实现</td>
+</tr>
+<tr>
+<td>system</td>
+<td>Y</td>
+<td>Y</td>
+<td>–</td>
+<td>本地的，Maven仓库之外的类库文件</td>
+</tr>
+</tbody></table>
+<h3 id="5、传递性依赖"><a href="#5、传递性依赖" class="headerlink" title="5、传递性依赖"></a>5、传递性依赖</h3><p><strong>何为传递性依赖</strong></p>
+<p>实际开发中，我们会需要用到很多项目所依赖的jar包，例如，我们公司的feishu系统依赖Spring Framework,Spring Framework又依赖于commons-logging,那么commons-logging就是feishu的传递性依赖。Maven会解析各个直接依赖的POM，将那些必要的间接依赖，以传递性依赖的形式引入到当前的项目当中</p>
+<p><strong>传递性依赖和依赖范围</strong><br>依赖范围不仅可以控制依赖于三种classpath的关系，还对传递性依赖产生影响。假设A依赖于B,B依赖于C，我们说A对于B是第一直接依赖，B对C是第二直接依赖，A对C是传递性依赖。第一直接依赖的范围和第二直接依赖的范围决定了传递性依赖的范围，下表所示，最左边一列表示第一直接依赖范围，最上面一行表示第二直接依赖范围，中间交叉单元格则表示传递性依赖范围。</p>
+<p> . | compile | test | provided | runtime<br>—|—|—|–|–|—|—<br>compile|compile|—|—|runtime<br>test | test|—|—|test<br>provided | provided|—|provided|provided<br>runtime | runtime|—|—|runtime</p>
+<h3 id="6、依赖调解"><a href="#6、依赖调解" class="headerlink" title="6、依赖调解"></a>6、依赖调解</h3><p>Maven引入的传递性依赖，一方面大大简化了和方便了依赖声明，另一方面，大部分情况下我们只关心项目的直接依赖是什么，而不用考虑这些依赖会引入什么传递性依赖。但是有时候当传递性依赖造成问题的时候，我们就需要清楚的知道传递性依赖是从那条依赖路径引入的。</p>
+<p><strong>第一原则：路径最近者优先</strong></p>
+<p>例如，项目A有这样的依赖：</p>
+<p>A–&gt;B–&gt;C–&gt;X(1.0)</p>
+<p>A–&gt;D–X(2.0)</p>
+<p>根据第一原则，选择路径最近的，所以X(2.0)会被解析使用。</p>
+<p><strong>第二原则：第一声明者优先</strong></p>
+<p>依赖调解的第一原则不能解决所有问题，例如：</p>
+<p>A–&gt;B–&gt;Y(1.0)</p>
+<p>A–&gt;C–&gt;Y(2.0)</p>
+<p>当遇到路径长度相同的情况，第一原则已经不能判断解析谁了，那么更加依赖调解的第二原则，选择第一声明者，假如在POM中先声明B，那么Y(1.0)会被解析使用。</p>
+<h3 id="7、可选依赖"><a href="#7、可选依赖" class="headerlink" title="7、可选依赖"></a>7、可选依赖</h3><p>假设，项目A依赖于项目B，项目B依赖于项目X和Y,B对于X和Y的依赖都是可选依赖：A–&gt;B、B–&gt;X(可选)、B–&gt;Y(可选)，根据传递性依赖的定义，如果所有这三个依赖的范围都是compile，那么X、Y就是A的compile范围传递性依赖，然而不是这样的，==由于X、Y是传递性依赖、依赖将不会被传递==。换句话说，X、Y将不会对A有任何影响。</p>
+<p>为什么要使用可选依赖这一特性呢？可能项目B实现了两个特性，其中的特性一依赖于X，特性二依赖于Y,而且这两个特性是互斥的，用户不可能同时使用两个特性。比如B是一个持久层隔离工具包，它支持多种数据库，报错MySQL、Oracle,在构建这个工具包的时候，需要这两种数据库的驱动程序，但是在使用这个工具包的时候，只会依赖一种数据库。</p>
+<p>下面为项目B的可选依赖的配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;project&gt;</span><br><span class="line">    &lt;modelVersion&gt;3.0.0&lt;/modelVersion&gt;</span><br><span class="line">    &lt;groupId&gt;com.up366.feishu&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;project-B&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.0.0&lt;/version&gt;</span><br><span class="line">    &lt;dependencies&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;mysql&lt;/gruopId&gt;</span><br><span class="line">            &lt;artifactId&gt;mysql-connector-java&lt;/artifact&gt;</span><br><span class="line">            &lt;version&gt;5.1.10&lt;/version&gt;</span><br><span class="line">            &lt;optional&gt;true&lt;/optional&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;groupId&gt;oracle&lt;/gruopId&gt;</span><br><span class="line">            &lt;artifactId&gt;oracle-connector-java&lt;/artifact&gt;</span><br><span class="line">            &lt;version&gt;6.1.15&lt;/version&gt;</span><br><span class="line">            &lt;optional&gt;true&lt;/optional&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">    &lt;/dependencies&gt;</span><br><span class="line">&lt;/project&gt;</span><br></pre></td></tr></table></figure>
+
+<p>上述XML代码片段中，使用<optional>元素表示mysql-connector-java和oracle-connector-java这两个依赖为可选依赖，他们只对当前项目B产生影响，当其他项目依赖于B的时候，这两个依赖不会被传递。因此，当项目A依赖于项目B的时候，如果使用基于MySQL数据库，那么在项目A中需要显式地声明mysql-connector-java这一依赖，如下：</optional></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;project&gt;</span><br><span class="line">    &lt;modelVersion&gt;3.0.0&lt;/modelVersion&gt;</span><br><span class="line">    &lt;groupId&gt;com.up366.feishu&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;project-A&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.0.0&lt;/version&gt;</span><br><span class="line">    &lt;dependencies&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;mysql&lt;/gruopId&gt;</span><br><span class="line">            &lt;artifactId&gt;mysql-connector-java&lt;/artifact&gt;</span><br><span class="line">            &lt;version&gt;5.1.10&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">    &lt;/dependencies&gt;</span><br><span class="line">&lt;/project&gt;</span><br></pre></td></tr></table></figure>
+
+<p>在理想的情况下，是不应该使用可选依赖的。除非是某一个项目实现了多个互斥的特性，在面向对象设计中，有个单一职责性原则，意指一个类应该只要一项职责。</p>
+<h3 id="8、排除依赖"><a href="#8、排除依赖" class="headerlink" title="8、排除依赖"></a>8、排除依赖</h3><p>传递性依赖会给项目隐式地引入很多依赖，这极大的简化了项目依赖的管理，但是有时候这种特性也会带来问题。例如，当前项目有一个第三方依赖，而这个第三方依赖由于某些原因依赖了另外一个类库的SNAPSHOT版本，那么这个SNAPSHOT就会成为当前项目的传递性依赖，而SNAPSHOT版本的不稳定性会直接影响到当前的项目，这时就需要排除掉SNAPSHOT,并且在当前项目中声明该类库的某个正式发布的版本，排除传递性依赖的代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&lt;groupId&gt;com.up366.feishu&lt;/groupId&gt;</span><br><span class="line">&lt;artifactId&gt;project-A&lt;/artifactId&gt;</span><br><span class="line">&lt;version&gt;1.0.0&lt;/version&gt;</span><br><span class="line">&lt;dependencies&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;com.up366.feishu&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;project-B&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;1.0.0&lt;/version&gt;</span><br><span class="line">        &lt;exclusions&gt;</span><br><span class="line">            &lt;exclusion&gt;</span><br><span class="line">                &lt;groupId&gt;com.up366.feishu&lt;/groupId&gt;</span><br><span class="line">                &lt;artifactId&gt;project-C&lt;/artfactId&gt;</span><br><span class="line">            &lt;/exclusion&gt;</span><br><span class="line">        &lt;/exclusions&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;com.up366.feishu&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;project-C&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;1.1.0&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">&lt;/dependencies&gt;</span><br></pre></td></tr></table></figure>
+
+<p>上面代码中，项目A依赖于项目B，但是由于一些原因，不想引入传递性依赖C，而是在自己显式的声明对于项目C1.1.0版本的依赖。代码中使用exclusion元素声明排除依赖，exclusions可以包含一个或者多个exclusion子元素，因此可以排除一个或者多个传递性依赖。<br>需要声明的是，声明exclusion的时候只需要groupId和artifactId而不需要version元素。这是因为只需要groupId和artifactId就能唯一定位依赖图中的某个依赖。</p>
+<h3 id="9、归并依赖"><a href="#9、归并依赖" class="headerlink" title="9、归并依赖"></a>9、归并依赖</h3><p>举个例子，Spring Framework包含很多模块，例如core:2.5.6、bean:2.5.6、context:2.5.6和support:2.5.6,他们来着同一项目的不同模块，因此，所有这些依赖的版本都是相同的，而且，如果以后需要升级Spring Framework，这些依赖的版本会一起升级，这样我们就可以像Java中声明一个Constants一样，为依赖的项目的版本设置一个这样类似常量的东西。这样在升级Spring Framework的时候就需要修改一处，代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">&lt;project&gt;</span><br><span class="line">    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;</span><br><span class="line">    &lt;groupId&gt;com.up366.feishu&lt;/groupId&gt;</span><br><span class="line">    &lt;artfactId&gt;feishu_v3&lt;/artifactId&gt;</span><br><span class="line">    &lt;name&gt;feishu_v3&lt;/name&gt;</span><br><span class="line">    &lt;version&gt;1.0.0-SNAPSHOT&lt;/version&gt;</span><br><span class="line">    </span><br><span class="line">    &lt;properties&gt;</span><br><span class="line">        &lt;springframework.version&gt;2.5.6&lt;/springframework.version&gt;</span><br><span class="line">    &lt;/properties&gt;</span><br><span class="line">    </span><br><span class="line">    &lt;dependencies&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework&lt;/groupId&gt;</span><br><span class="line">            &lt;artifact&gt;spring-core&lt;/artifact&gt;</span><br><span class="line">            &lt;version&gt;$&#123;springframework.version&#125;&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework&lt;/groupId&gt;</span><br><span class="line">            &lt;artifact&gt;spring-beans&lt;/artifact&gt;</span><br><span class="line">            &lt;version&gt;$&#123;springframework.version&#125;&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework&lt;/groupId&gt;</span><br><span class="line">            &lt;artifact&gt;spring-context&lt;/artifact&gt;</span><br><span class="line">            &lt;version&gt;$&#123;springframework.version&#125;&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework&lt;/groupId&gt;</span><br><span class="line">            &lt;artifact&gt;spring-context-support&lt;/artifact&gt;</span><br><span class="line">            &lt;version&gt;$&#123;springframework.version&#125;&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">    &lt;/dependencies&gt;</span><br><span class="line">&lt;/project&gt;</span><br></pre></td></tr></table></figure>
+
+<p>上面首先使用了properties元素定义Maven属性，该例中定义了一个springframework.version子元素，其值为2.5.6.有了这个属性定义之后，Maven运行的时候会将POM中的${springframework.version}替换成值2.5.6。也就是说，可以使用美元符号和大括弧环绕的方式引用Maven属性。然后将所有Spring Framework依赖的版本值用这一属性引用表示，这和Java中的常量是一样的道理，不同的只是语法。</p>
+<h3 id="10、优化依赖"><a href="#10、优化依赖" class="headerlink" title="10、优化依赖"></a>10、优化依赖</h3><p><strong>查看已解析依赖</strong></p>
+<p>可以使用命令，以列表的形式查看已经解析的依赖，还可以查看这些依赖的范围，如下：</p>
+<ul>
+<li>列表形式查看命令：mvn dependency:list</li>
+<li>树状结构查看命令：mvn dependency:tree</li>
+<li>依赖分析命令：mvn dependency:analyze</li>
+</ul>
+<p>mvn dependency:analyze由两部分组成，首先是Used updeclared dependencies,意指项目中使用到的，没有显式声明的依赖。<br>其次是Unused declared dependencies，意指项目中没有使用的，但是显是声明了的依赖。需要注意的是，对于这一类依赖，我们不应该简单的直接删除其声明，而是应该仔细分析，由于dependency:analyze只会分析编译主代码和测试代码需要用到的依赖，一些执行测试和运行时需要的依赖它就发现不了。建议不要乱删，当然有时候确实能通过该信息找到一些没用的依赖，但一定要小心测试。</p>
+
+    </article>
+    <!-- license  -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="http://yoursite.com">wangwei</a>
+            <p>发表日期：<a href="http://yoursite.com/2019/06/27/Maven坐标与依赖/">June 27th 2019, 1:54:47 pm</a>
+            <p>更新日期：<a href="http://yoursite.com/2019/06/27/Maven坐标与依赖/">June 28th 2019, 11:22:09 am</a>
+            <p>版权声明：本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+        </li>
+        <li class="previous">
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+<!-- City版安装代码已完成 -->
+    
+    
+    <!-- partial('_partial/comment/changyan') -->
+    <!--PC版-->
+
+
+    
+    
+
+    <!-- 评论 -->
+</main>
+            <!-- profile -->
+            
+        </div>
+        <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+    <div class="social">
+        
+    
+        
+            
+                <a href="mailto:wangwei_peking@163.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/wangwei0906" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title=wechat>
+                  
+                  <img class="profile-qr" src="/assets/example_qr.png" />
+                </span>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+    </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+    
+    
+   <span id="hexo-power">Contact Me</span>
+    </div>
+    <!-- 不蒜子  -->
+    
+    <div class="busuanzi-container">
+    
+     
+    <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+    
+    </div>
+    
+</footer>
+    </div>
+    <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、何为Maven坐标"><span class="toc-number">1.</span> <span class="toc-text">1、何为Maven坐标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、坐标详解"><span class="toc-number">2.</span> <span class="toc-text">2、坐标详解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、依赖的配置"><span class="toc-number">3.</span> <span class="toc-text">3、依赖的配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、依赖范围"><span class="toc-number">4.</span> <span class="toc-text">4、依赖范围</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5、传递性依赖"><span class="toc-number">5.</span> <span class="toc-text">5、传递性依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6、依赖调解"><span class="toc-number">6.</span> <span class="toc-text">6、依赖调解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7、可选依赖"><span class="toc-number">7.</span> <span class="toc-text">7、可选依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8、排除依赖"><span class="toc-number">8.</span> <span class="toc-text">8、排除依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9、归并依赖"><span class="toc-number">9.</span> <span class="toc-text">9、归并依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10、优化依赖"><span class="toc-number">10.</span> <span class="toc-text">10、优化依赖</span></a></li></ol>
+    </div>
+    
+    <div class="back-top iconfont-archer">&#xe639;</div>
+    <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+          <div class="sidebar-panel-archives">
+    <!-- 在ejs中将archive按照时间排序 -->
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 1
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+    
+    
+    
+    <div class="archive-year"> 2019 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/27</span><a class="archive-post-title" href= "/2019/06/27/Maven坐标与依赖/" >Maven坐标与依赖</a>
+        </li>
+    
+    </div>
+  </div>
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+    
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+    缺失模块。<br/>
+    1、请确保node版本大于6.2<br/>
+    2、在博客根目录（注意不是archer根目录）执行以下命令：<br/>
+    <span style="color: #f75357; font-size: 1rem; line-height: 2rem;">npm i hexo-generator-json-content --save</span><br/>
+    3、在根目录_config.yml里添加配置：
+    <pre style="color: #787878; font-size: 0.6rem;">
+jsonContent:
+  meta: false
+  pages: false
+  posts:
+    title: true
+    date: true
+    path: true
+    text: false
+    raw: false
+    content: false
+    slug: false
+    updated: false
+    comments: false
+    link: false
+    permalink: false
+    excerpt: false
+    categories: true
+    tags: true</pre>
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+    </div>
+</div> 
+    <script>
+    var siteMeta = {
+        root: "/",
+        author: "wangwei"
+    }
+</script>
+    <!-- CDN failover -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ === 'undefined')
+        {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js">\x3C/script>')
+        }
+    </script>
+    <script src="/scripts/main.js"></script>
+    <!-- algolia -->
+    
+    <!-- busuanzi  -->
+    
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    <!-- CNZZ  -->
+    
+    </div>
+    <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script>    
+     
+    </body>
+</html>
+
+
